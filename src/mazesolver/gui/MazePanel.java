@@ -3,6 +3,8 @@ package mazesolver.gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
 
 public class MazePanel extends JPanel {
@@ -15,7 +17,8 @@ public class MazePanel extends JPanel {
 
 	public MazePanel(int columns, int rows, int tileSizeInPixels) {
 		setTileSize(tileSizeInPixels);
-		setMaze(new Maze(columns, rows));
+		//setMaze(new Maze(columns, rows));
+		setMaze(MazeTool.createMaze(columns, rows, new Point(1,1), new Point(5,5)));
 		MouseAdapter adapter = getMouseAdapter();
 		addMouseListener(adapter);
 		addMouseMotionListener(adapter);

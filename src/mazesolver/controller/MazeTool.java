@@ -1,10 +1,8 @@
 package mazesolver.controller;
 
 import java.awt.Point;
-import java.awt.image.TileObserver;
 import java.util.*;
 
-import org.w3c.dom.views.DocumentView;
 
 import mazesolver.model.Maze;
 
@@ -12,9 +10,43 @@ public class MazeTool {
 
 	private final static Random random = new Random();
 
-	private MazeTool() {
-	}
+	private Maze maze;
+	private List<Point> tilesToCheck = new ArrayList<Point>(); 
+	public Maze getMaze() {return maze;}
+	public void setMaze(Maze maze) {this.maze = maze;}
 
+	public MazeTool (int width, int height, Point startingPoint, Point endPoint) {
+		setMaze(new Maze(width, height, startingPoint, endPoint));
+		maze.fillAllTiles(true);
+		tilesToCheck.add(startingPoint);
+	}
+	
+	public void excavateNext() {
+		//Point tileToCheck = tilesToCheck.remove(random.nextInt(tilesToCheck.size()));
+		Point tileToCheck = tilesToCheck.remove(tilesToCheck.size()-1);
+		System.out.println("Testing " + tilesToCheck);
+		
+		excavateIfPossible(tilesToCheck, maze, tileToCheck);
+	}
+	
+	private static void excavateIfPossible(List<Point> tilesToCheck, Maze maze, Point tileToCheck) {
+		if (maze.contains(tileToCheck) && isValidForExcavation(maze.getTiles(), tileToCheck)) {
+			maze.setTile(tileToCheck, false);
+			List<Point> neighbors = get4NeighborsNSEW(tileToCheck);
+			removeBorderTilesAndTilesOutsideMaze(maze.getTiles(), neighbors);
+			for (Point neighborTileToCheck : neighbors) {
+				if (isValidForExcavation(maze.getTiles(), neighborTileToCheck)) {
+					tilesToCheck.add(neighborTileToCheck);
+					System.out.println("Adding neighbor: " + neighborTileToCheck);
+				}
+			}
+		}
+	}
+	
+	public boolean isDone() {
+		return tilesToCheck.size() == 0;
+	}
+	
 	public static Maze createMaze(int width, int height, Point startingPoint, Point endingPoint) {
 
 		Maze maze = new Maze(width, height);
@@ -22,19 +54,10 @@ public class MazeTool {
 		List<Point> tilesToCheck = new ArrayList<Point>();
 		tilesToCheck.add(startingPoint);
 		do {
-			Point tileToCheck = tilesToCheck.remove(random.nextInt(tilesToCheck.size()));
+			//Point tileToCheck = tilesToCheck.remove(random.nextInt(tilesToCheck.size()));
+			Point tileToCheck = tilesToCheck.remove(tilesToCheck.size()-1);
 			System.out.println("Testing " + tilesToCheck);
-			if (maze.contains(tileToCheck) && isValidForExcavation(maze.getTiles(), tileToCheck)) {
-				maze.setTile(tileToCheck, false);
-				List<Point> neighbors = get4NeighborsNSEW(tileToCheck);
-				removeBorderTilesAndTilesOutsideMaze(maze.getTiles(), neighbors);
-				for (Point neighborTileToCheck : neighbors) {
-					if (isValidForExcavation(maze.getTiles(), neighborTileToCheck)) {
-						tilesToCheck.add(neighborTileToCheck);
-						System.out.println("Adding neighbor: " + neighborTileToCheck);
-					}
-				}
-			}
+			excavateIfPossible(tilesToCheck, maze, tileToCheck);
 		} while (tilesToCheck.size() > 0);
 
 		return maze;
@@ -42,7 +65,8 @@ public class MazeTool {
 
 	private static boolean isValidForExcavation(boolean[][] tiles, Point tileToCheck) {
 		return  tiles[tileToCheck.x][tileToCheck.y] && numberOfFilled(tiles, get4NeighborsNSEW(tileToCheck)) >= 3
-				&& (tileToCheck.x % 2 ==1 || tileToCheck.y% 2 ==1) ;
+				&& numberOfFilled(tiles, get8Neighbors(tileToCheck)) >= 6
+				&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) ;
 	}
 
 	private static void removeBorderTilesAndTilesOutsideMaze(boolean[][] tiles, List<Point> neighbors) {

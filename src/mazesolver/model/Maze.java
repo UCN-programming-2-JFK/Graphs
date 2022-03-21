@@ -9,12 +9,18 @@ public class Maze implements Iterable<Point> {
 
 	private int columns, rows;
 	private boolean[][] tiles;
-	private Point startingTile = null, goalTile = null;
+	private Point startingPoint = null, endPoint = null;
 
 	public Maze(int columns, int rows) {
 		this.columns = columns;
 		this.rows = rows;
 		createTiles();
+	}
+	
+	public Maze(int columns, int rows, Point startingPoint, Point endPoint) {
+		this(columns, rows);
+		this.setStartingPoint(startingPoint);
+		this.setEndPoint(endPoint);
 	}
 
 	private void createTiles() {
@@ -40,20 +46,21 @@ public class Maze implements Iterable<Point> {
 		this.tiles = tiles;
 	}
 
-	public Point getStartingTile() {
-		return startingTile;
+	public Point getStartingPoint() {
+		return startingPoint;
 	}
 
-	public void setStartingTile(Point startingTile) {
-		this.startingTile = startingTile;
+	public void setStartingPoint
+	(Point startingTile) {
+		this.startingPoint = startingTile;
 	}
 
-	public Point getGoalTile() {
-		return goalTile;
+	public Point getEndPoint() {
+		return endPoint;
 	}
 
-	public void setGoalTile(Point goalTile) {
-		this.goalTile = goalTile;
+	public void setEndPoint(Point goalTile) {
+		this.endPoint = goalTile;
 	}
 
 	public void clearAllTiles(boolean blocked) {

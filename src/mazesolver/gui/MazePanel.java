@@ -17,8 +17,8 @@ public class MazePanel extends JPanel {
 
 	public MazePanel(int columns, int rows, int tileSizeInPixels) {
 		setTileSize(tileSizeInPixels);
-		//setMaze(new Maze(columns, rows));
-		setMaze(MazeTool.createMaze(columns, rows, new Point(1,1), new Point(5,5)));
+		setMaze(new Maze(columns, rows));
+		//setMaze(MazeTool.createMaze(columns, rows, new Point(1,1), new Point(5,5)));
 		MouseAdapter adapter = getMouseAdapter();
 		addMouseListener(adapter);
 		addMouseMotionListener(adapter);
@@ -40,13 +40,13 @@ public class MazePanel extends JPanel {
 				g.fillRect(x * getTileSize(), y * getTileSize(), getTileSize(), getTileSize());
 			}
 		}
-		if(maze.getStartingTile() != null) {
+		if(maze.getStartingPoint() != null) {
 			g.setColor(Color.red);
-			g.fillRect(maze.getStartingTile().x * getTileSize(), maze.getStartingTile().y * getTileSize(), getTileSize(), getTileSize());
+			g.fillRect(maze.getStartingPoint().x * getTileSize(), maze.getStartingPoint().y * getTileSize(), getTileSize(), getTileSize());
 		}
-		if(maze.getGoalTile() != null) {
+		if(maze.getEndPoint() != null) {
 			g.setColor(Color.green);
-			g.fillRect(maze.getGoalTile().x * getTileSize(), maze.getGoalTile().y * getTileSize(), getTileSize(), getTileSize());
+			g.fillRect(maze.getEndPoint().x * getTileSize(), maze.getEndPoint().y * getTileSize(), getTileSize(), getTileSize());
 		}
 	}
 
@@ -90,11 +90,11 @@ public class MazePanel extends JPanel {
 		updateMousePosition(e);
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if(e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
-					getMaze().setStartingTile(lastMouseTilePosition);
+					getMaze().setStartingPoint(lastMouseTilePosition);
 					getMaze().getTiles()[lastMouseTilePosition.x][lastMouseTilePosition.y] = false;
 				}
 			else if(e.getModifiersEx() == InputEvent.SHIFT_DOWN_MASK) {
-				getMaze().setGoalTile(lastMouseTilePosition);
+				getMaze().setEndPoint(lastMouseTilePosition);
 				getMaze().getTiles()[lastMouseTilePosition.x][lastMouseTilePosition.y] = false;
 			}
 			else	{

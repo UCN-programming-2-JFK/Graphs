@@ -8,62 +8,53 @@ import mazesolver.model.Maze;
 
 public class MazeTool {
 
-	private final static Random random = new Random();
-
 	public static enum Direction{UP , RIGHT , DOWN , LEFT };
 	public static final Point UpDeltas = new Point(0,-1),RightDeltas = new Point(1,0), DownDeltas = new Point(0,1), LeftDeltas = new Point(-1,0); 
 	
 	private Maze maze;
-	public Stack<Point> tilesToCheck = new Stack<Point>(); 
 	public Maze getMaze() {return maze;}
 	public void setMaze(Maze maze) {this.maze = maze;}
-	private Point currentPoint;
-	public Point getCurrentPoint() {return currentPoint;}
+	public ExcavationStrategyIF strategy;
 	
+	public ExcavationStrategyIF getStrategy() {
+		return this.strategy;
+	}
+	public void setStrategy(ExcavationStrategyIF strategy) {
+		this.strategy  =strategy;
+	}
 	public MazeTool (int width, int height, Point startingPoint, Point endPoint) {
 		setMaze(new Maze(width, height, startingPoint, endPoint));
 		maze.fillAllTiles(true);
-		currentPoint = startingPoint;
-		tilesToCheck.push(currentPoint);
+		setStrategy(new DepthFirstExcavationStrategy(maze));
 	}
 	
 	public void excavateNext() {		
-		
-		maze.setTile(currentPoint, false);
-		
-		List<Point> validNeighbors = getValidNeighbors(currentPoint);
-			
-		if(validNeighbors.size() > 0 && !currentPoint.equals(getMaze().getEndPoint())) {
-			tilesToCheck.push(currentPoint);
-			currentPoint = validNeighbors.get(random.nextInt(validNeighbors.size()));
-		}
-		else {
-			currentPoint = tilesToCheck.pop();
-		}
+		getStrategy().excavateNext();
 	}
-	
-	private List<Point> getValidNeighbors(Point tileToCheck) {
+	public Point getCurrentPoint() {return getStrategy().getCurrentPoint();}
+	public static List<Point> getValidNeighbors(Maze maze, Point tileToCheck) {
 		List<Point> neighbors = get4NeighborsNSEW(tileToCheck);
 		removeBorderTilesAndTilesOutsideMaze(maze.getTiles(), neighbors);
 		for(int neighBorIndex = neighbors.size()-1; neighBorIndex>= 0 ; neighBorIndex--) {
 			Point neighborToTest= neighbors.get(neighBorIndex);
-			if(!isValidForExcavation(neighborToTest))	 {neighbors.remove(neighBorIndex);}
+			if(!isValidForExcavation(maze,neighborToTest))	 {neighbors.remove(neighBorIndex);}
 			
 		}
 		return neighbors;
 	}
+	
 	public boolean isDone() {
-		return tilesToCheck.size() == 0;
+		return getStrategy().isDone();
 	}
 
 
-	private boolean isValidForExcavation( Point tileToCheck) {
+	public static boolean isValidForExcavation(Maze maze, Point tileToCheck) {
 		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && numberOfFilled(maze.getTiles(), get4NeighborsNSEW(tileToCheck)) >= 3
 				&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
 				&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
 	}
 
-	private static void removeBorderTilesAndTilesOutsideMaze(boolean[][] tiles, List<Point> neighbors) {
+	public static void removeBorderTilesAndTilesOutsideMaze(boolean[][] tiles, List<Point> neighbors) {
 		for (int tileIndex = neighbors.size() - 1; tileIndex >= 0; tileIndex--) {
 			if (isOutside(tiles, neighbors.get(tileIndex)) || isBorderTile(tiles, neighbors.get(tileIndex))) {
 				neighbors.remove(tileIndex);
@@ -76,7 +67,6 @@ public class MazeTool {
 		return (pointToCheck.x == 0 || pointToCheck.y == 0 || pointToCheck.x == tiles.length - 1
 				|| pointToCheck.y == tiles[0].length - 1);
 	}
-
 	
 	public static boolean isOutside(boolean[][] tiles, Point pointToCheck) {
 
@@ -101,7 +91,6 @@ public class MazeTool {
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x + 1, pointToGetNeighborsFor.y - 1));
 		return diagonalNeighbors;
 	}
-
 	
 	public static List<Point> get8Neighbors(Point pointToGetNeighborsFor) {
 		List<Point> neighbors = get4NeighborsNSEW(pointToGetNeighborsFor);
@@ -147,5 +136,10 @@ public class MazeTool {
 	
 	public static List<Point> getAllDirectionDeltas(){
 		return new ArrayList<Point>(Arrays.asList(UpDeltas, RightDeltas, DownDeltas, LeftDeltas));
+	}
+	
+	public List<Point> getTilesToCheck() {
+		// TODO Auto-generated method stub
+		return getStrategy().getTilesToCheck();
 	}
 }

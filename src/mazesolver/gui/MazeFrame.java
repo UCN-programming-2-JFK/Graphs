@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import org.junit.validator.PublicClassValidator;
 
+import mazesolver.controller.Excavator;
 import mazesolver.controller.MazeTool;
 
 public class MazeFrame extends JFrame implements ExternalPainterIF {
@@ -16,7 +17,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static MazePanel panel;
 	private static boolean done = false;
 	private static int columns = 17, rows = 11, tileSizeInPixels = 50;
-	private static MazeTool mazeTool;
+	private static Excavator mazeTool;
 	
 	public static void main(String[] args) {
 
@@ -52,7 +53,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		}
 		;
 		while(true){
-			mazeTool = new MazeTool(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
+			mazeTool = new Excavator(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			panel.setMaze(mazeTool.getMaze());
 			while (!mazeTool.isDone()) {
 				mazeTool.excavateNext();
@@ -87,7 +88,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	public void addPaint(Graphics g) {
 		
 		drawTile(g, mazeTool.getCurrentPoint(), Color.blue);
-		for(Point toDoPoint : mazeTool.tilesToCheck) {
+		for(Point toDoPoint : mazeTool.getTilesToCheck()) {
 			drawTile(g, toDoPoint, Color.gray);
 		}
 	}

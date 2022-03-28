@@ -3,13 +3,10 @@ package mazesolver.controller.strategies;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.Stack;
-
 import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
 
-public class BreadthFirstExcavationStrategy implements ExcavationStrategyIF {
+public class BreadthFirstExcavationStrategy extends AbstractExcavationStrategy {
 
 	private List<Point> tilesToCheck = new ArrayList<Point>();
 
@@ -18,53 +15,26 @@ public class BreadthFirstExcavationStrategy implements ExcavationStrategyIF {
 		return tilesToCheck;
 	}
 
-	private Point currentPoint;
-
-	@Override
-	public Point getCurrentPoint() {
-		return currentPoint;
-	}
-
-	private Maze maze;
-	private Random random = new Random();
-
+	
 	public BreadthFirstExcavationStrategy(Maze mazeToExcavate) {
-		this.setMaze(mazeToExcavate);
-		currentPoint = maze.getStartingPoint();
-		tilesToCheck.add(currentPoint);
-	}
-
-	private void setMaze(Maze mazeToExcavate) {
-		this.maze = mazeToExcavate;
+		super(mazeToExcavate);
+		getTilesToCheck().add(getCurrentPoint());
 	}
 
 	@Override
 	public void excavateNext() {
 
-		if (isValidForExcavation(currentPoint)) {
-			maze.setTile(currentPoint, false);
+		if (isValidForExcavation(getCurrentPoint())) {
+			getMaze().setTile(getCurrentPoint(), false);
 
-			List<Point> validNeighbors = MazeTool.getValidNeighbors(maze, currentPoint);
-			validNeighbors.remove(maze.getEndPoint());
+			List<Point> validNeighbors = MazeTool.getValidNeighbors(getMaze(), getCurrentPoint());
+			validNeighbors.remove(getMaze().getEndPoint());
 			for (Point neighPoint : validNeighbors) {
-				if (!tilesToCheck.contains(neighPoint)) {
-					tilesToCheck.add(neighPoint);
+				if (!getTilesToCheck().contains(neighPoint)) {
+					getTilesToCheck().add(neighPoint);
 				}
 			}
 		}
-		currentPoint = tilesToCheck.remove(0);
+		setCurrentPoint(getNextPoint());
 	}
-
-	private boolean isValidForExcavation(Point tileToCheck) {
-		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze.getTiles(), MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
-				&& !MazeTool.hasUnconnectedOpenDiagonalNeighbor(maze, tileToCheck)
-		&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
-		&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
-	}
-
-	@Override
-	public boolean isDone() {
-		return tilesToCheck.size() == 0;
-	}
-
 }

@@ -74,7 +74,7 @@ public class MazeTool {
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x + 1, pointToGetNeighborsFor.y + 1));
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x - 1, pointToGetNeighborsFor.y + 1));
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x + 1, pointToGetNeighborsFor.y - 1));
-		System.out.println(diagonalNeighbors.size() + " number of diagonal neighbors");
+//		System.out.println(diagonalNeighbors.size() + " number of diagonal neighbors");
 		return diagonalNeighbors;
 	}
 	

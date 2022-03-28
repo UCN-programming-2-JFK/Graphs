@@ -2,57 +2,40 @@ package mazesolver.controller.strategies;
 
 import java.awt.Point;
 import java.util.List;
-import java.util.Random;
 import java.util.Stack;
 
 import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
 
-public class DepthFirstExcavationStrategy implements ExcavationStrategyIF {
+public class DepthFirstExcavationStrategy extends AbstractExcavationStrategy {
 	
 	private Stack<Point> tilesToCheck = new Stack<Point>();
+	
 	@Override
-	public Stack<Point> getTilesToCheck() {
+	public List<Point> getTilesToCheck() {
 		return tilesToCheck;
 	}
 
-	private Point currentPoint;
-	@Override
-	public Point getCurrentPoint() {return currentPoint;}
-	private Maze maze;
-	private Random random = new Random();
-	
 	public DepthFirstExcavationStrategy(Maze mazeToExcavate) {
-		this.setMaze(mazeToExcavate);
-		currentPoint = maze.getStartingPoint();
-		tilesToCheck.push(currentPoint);
+		super(mazeToExcavate);
+		tilesToCheck.push(getCurrentPoint());
 	}
-	
-
-	private void setMaze(Maze mazeToExcavate) {
-		this.maze = mazeToExcavate;
-	}
-	
+		
 	@Override
 	public void excavateNext() {		
 		
-		maze.setTile(currentPoint, false);
+		getMaze().setTile(getCurrentPoint(), false);
 		
-		List<Point> validNeighbors = MazeTool.getValidNeighbors(maze, currentPoint);
+		List<Point> validNeighbors = MazeTool.getValidNeighbors(getMaze(), getCurrentPoint());
 			
-		if(validNeighbors.size() > 0 && !currentPoint.equals(maze.getEndPoint())) {
-			tilesToCheck.push(currentPoint);
-			currentPoint = validNeighbors.get(random.nextInt(validNeighbors.size()));
+		if(validNeighbors.size() > 0 && !getCurrentPoint().equals(getMaze().getEndPoint())) {
+			tilesToCheck.push(getCurrentPoint());
+			setCurrentPoint(validNeighbors.get(getRandom().nextInt(validNeighbors.size())));
 		}
-		else {
-			currentPoint = tilesToCheck.pop();
-		}
+		else
+			{
+				setCurrentPoint( tilesToCheck.pop());
+			}
+		
 	}
-	
-	@Override
-	public boolean isDone() {
-		return tilesToCheck.size() == 0;
-	}
-
-
 }

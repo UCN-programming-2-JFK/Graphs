@@ -6,6 +6,7 @@ import java.awt.event.*;
 import javax.management.loading.PrivateClassLoader;
 import javax.swing.*;
 
+import org.junit.runners.model.FrameworkField;
 import org.junit.validator.PublicClassValidator;
 
 import mazesolver.controller.Excavator;
@@ -19,32 +20,38 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static final long serialVersionUID = 1L;
 	private static MazePanel panel;
 	private static boolean done = false;
-	private static int columns = 17, rows = 11, tileSizeInPixels = 100;
+	private static int columns, rows, tileSizeInPixels = 32;
 	private static ExcavatorIF excavator;
-	
+	private static int msSleep = 10;
+
 	public static void main(String[] args) {
 
-		Dimension size = Toolkit. getDefaultToolkit(). getScreenSize();
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
 		columns = size.width / tileSizeInPixels;
-		rows = size.height/ tileSizeInPixels;
-		if(columns % 2 == 0) {columns --;}
-		if(rows% 2 == 0) {rows--;}
+		rows = size.height / tileSizeInPixels;
+		if (columns % 2 == 0) {
+			columns--;
+		}
+		if (rows % 2 == 0) {
+			rows--;
+		}
 		Runnable runner = new Runnable() {
 			public void run() {
 				MazeFrame window = new MazeFrame();
 				window.setTitle("Maze visualizer");
-				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); 
+				window.setUndecorated(true);
+				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 				window.setSize(r.width, r.height);
 				window.pack();
 				window.setVisible(true);
-				KeyListener keyAdapter=new KeyAdapter()
-				 {
-				  public void keyPressed(KeyEvent evt)
-				  {
-					  if(evt.getKeyCode()==KeyEvent.VK_ESCAPE){System.exit(0);}
-				  }
-				 };
+				KeyListener keyAdapter = new KeyAdapter() {
+					public void keyPressed(KeyEvent evt) {
+						if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+							System.exit(0);
+						}
+					}
+				};
 				window.addKeyListener(keyAdapter);
 				done = true;
 			}
@@ -55,19 +62,18 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			System.out.println("not done");
 		}
 		;
-		while(true){
+		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
-			//excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
-			//excavator = ExcavatorFactory.getRandomBreadthFirstExcavator(maze);								
+//			excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
+			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
+			// excavator = ExcavatorFactory.getRandomBreadthFirstExcavator(maze);
 			panel.setMaze(maze);
 			while (!excavator.isDone()) {
 				excavator.excavateNext();
-				System.out.println(	"excavating!");
 				panel.repaint();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(msSleep);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -78,9 +84,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 				e.printStackTrace();
 			}
 		}
-		
 	}
-
 
 	public MazeFrame() {
 		getRootPane().setLayout(new BorderLayout());
@@ -92,18 +96,20 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 
 	@Override
 	public void addPaint(Graphics g) {
-		
-		if(!excavator.isDone()) {
-			drawTile(g, excavator.getCurrentPoint(), Color.blue);
-		}
-		for(Point toDoPoint : excavator.getTilesToCheck()) {
-			drawTile(g, toDoPoint, Color.gray);
+
+		if (excavator != null) {
+			if (!excavator.isDone()) {
+				drawTile(g, excavator.getCurrentPoint(), Color.orange);
+			}
+			for (Point toDoPoint : excavator.getTilesToCheck()) {
+				drawTile(g, toDoPoint, Color.gray);
+			}
 		}
 	}
+
 	public void drawTile(Graphics g, Point pointToDraw, Color colorToUse) {
-		
 		g.setColor(colorToUse);
-		g.fillRect(pointToDraw.x * tileSizeInPixels, pointToDraw.y *tileSizeInPixels, tileSizeInPixels, tileSizeInPixels);
+		g.fillRect(pointToDraw.x * tileSizeInPixels, pointToDraw.y * tileSizeInPixels, tileSizeInPixels,
+				tileSizeInPixels);
 	}
-	
 }

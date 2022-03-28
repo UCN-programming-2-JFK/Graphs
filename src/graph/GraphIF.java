@@ -19,8 +19,4 @@ public interface GraphIF {
 	boolean containsVertex(Vertex vertex);
 
 	List<Vertex> getAdjacentVertices(Vertex vertex);
-
-	List<Vertex> depthFirstRepresentation(Vertex initialVertex);
-	
-	List<Vertex> breadthFirstRepresentation(Vertex initialVertex);
 }

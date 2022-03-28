@@ -14,11 +14,15 @@ public class MazePanel extends JPanel {
 	private Point lastMouseTilePosition = new Point();
 	private int tileSize;
 	private Maze maze;
+	private ExternalPainterIF externalPainter = null;
+
+	public ExternalPainterIF getExternalPainter() {return externalPainter;}
+
+	public void setExternalPainter(ExternalPainterIF externalPainter) {this.externalPainter = externalPainter;}
 
 	public MazePanel(int columns, int rows, int tileSizeInPixels) {
 		setTileSize(tileSizeInPixels);
 		setMaze(new Maze(columns, rows));
-		//setMaze(MazeTool.createMaze(columns, rows, new Point(1,1), new Point(5,5)));
 		MouseAdapter adapter = getMouseAdapter();
 		addMouseListener(adapter);
 		addMouseMotionListener(adapter);
@@ -28,18 +32,14 @@ public class MazePanel extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		paintMaze(g);
-		g.setColor(Color.red);
 		drawCursor(g);
+		if(getExternalPainter() != null) {
+			getExternalPainter().addPaint(g);
+		}
+		paintStartingAndEndingPoints(g);
 	}
 
-	private void paintMaze(Graphics g) {
-		Maze maze = getMaze();
-		for (int y = 0; y < maze.getRows(); y++) {
-			for (int x = 0; x < maze.getColumns(); x++) {
-				g.setColor(maze.getTiles()[x][y] ? Color.black : Color.white);
-				g.fillRect(x * getTileSize(), y * getTileSize(), getTileSize(), getTileSize());
-			}
-		}
+	private void paintStartingAndEndingPoints(Graphics g) {
 		if(maze.getStartingPoint() != null) {
 			g.setColor(Color.red);
 			g.fillRect(maze.getStartingPoint().x * getTileSize(), maze.getStartingPoint().y * getTileSize(), getTileSize(), getTileSize());
@@ -50,7 +50,19 @@ public class MazePanel extends JPanel {
 		}
 	}
 
+	private void paintMaze(Graphics g) {
+		Maze maze = getMaze();
+		for (int y = 0; y < maze.getRows(); y++) {
+			for (int x = 0; x < maze.getColumns(); x++) {
+				g.setColor(maze.getTiles()[x][y] ? Color.black : Color.white);
+				g.fillRect(x * getTileSize(), y * getTileSize(), getTileSize(), getTileSize());
+			}
+		}
+		
+	}
+
 	private void drawCursor(Graphics g) {
+		g.setColor(Color.red);
 		g.drawRect(lastMouseTilePosition.x * getTileSize(), lastMouseTilePosition.y * getTileSize(), getTileSize() - 1,
 				getTileSize() - 1);
 	}

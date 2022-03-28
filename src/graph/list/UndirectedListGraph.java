@@ -50,41 +50,4 @@ public class UndirectedListGraph implements GraphIF {
 	public List<Vertex> getAdjacentVertices(Vertex vertex) {		
 		return vertices.get(vertex);
 	}
-
-	@Override
-	public List<Vertex> depthFirstRepresentation(Vertex initialVertex) {
-		List<Vertex> visitedVertices = new ArrayList<Vertex>();
-		addAdjacentUnvisitedVerticesDepthFirst(initialVertex, visitedVertices);
-		return visitedVertices;
-	}
-	
-	private void addAdjacentUnvisitedVerticesDepthFirst(Vertex vertex, List<Vertex> visitedVertices){
-		visitedVertices.add(vertex);
-		List<Vertex> adjacentVertices = vertices.get(vertex);
-		
-		for(Vertex adjacentCandidate : adjacentVertices) {
-			if(containsEdge(vertex, adjacentCandidate) && !visitedVertices.contains(adjacentCandidate)) {
-				addAdjacentUnvisitedVerticesDepthFirst(adjacentCandidate, visitedVertices);
-			}
-		}
-	}
-
-	@Override
-	public List<Vertex> breadthFirstRepresentation(Vertex initialVertex) {
-		List<Vertex> visitedVertices = new ArrayList<Vertex>();
-		List<Vertex> verticesToVisit = new ArrayList<Vertex>();
-		verticesToVisit.add(initialVertex);
-		do {
-			Vertex vertexToInspect = verticesToVisit.remove(0);
-			visitedVertices.add(vertexToInspect);
-			for(Vertex vertexCandidate : getAdjacentVertices(vertexToInspect)) {
-				if(!visitedVertices.contains(vertexCandidate) && !verticesToVisit.contains(vertexCandidate)) {
-					verticesToVisit.add(vertexCandidate);
-				}
-			}
-		}
-		while(verticesToVisit.size() > 0);
-		
-		return visitedVertices;
-	}
 }

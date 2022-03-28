@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import graph.GraphIF;
 import graph.Vertex;
 import graph.list.DirectedListGraph;
+import graph.tools.DirectedGraphTraverser;
 
 class DirectedListGraphTests {
 	
@@ -68,7 +69,7 @@ class DirectedListGraphTests {
 	@Test
 	void testDepthFirstSearch() {
 		Vertex beginningVertex = aalborgVertex;
-		List<Vertex> allVerticesInGraph = graph.depthFirstRepresentation(beginningVertex);
+		List<Vertex> allVerticesInGraph = DirectedGraphTraverser.getDepthFirstRepresentation(graph, beginningVertex);
 		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
 		System.out.println("depth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
@@ -81,7 +82,7 @@ class DirectedListGraphTests {
 	@Test
 	void testDepthFirstSearch2() {
 		Vertex beginningVertex = ringkøbingVertex;
-		List<Vertex> allVerticesInGraph = graph.depthFirstRepresentation(beginningVertex);
+		List<Vertex> allVerticesInGraph = DirectedGraphTraverser.getDepthFirstRepresentation(graph, beginningVertex);
 		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
 		System.out.println("depth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
@@ -93,7 +94,7 @@ class DirectedListGraphTests {
 	@Test
 	void testBreadthFirstSearch() {
 		Vertex beginningVertex = aalborgVertex;
-		List<Vertex> allVerticesInGraph = graph.breadthFirstRepresentation(beginningVertex);
+		List<Vertex> allVerticesInGraph = DirectedGraphTraverser.getBreadthFirstRepresentation(graph, beginningVertex) ;
 		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
 		System.out.println("breadth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
@@ -105,7 +106,7 @@ class DirectedListGraphTests {
 	@Test
 	void testBreadthFirstSearch2() {
 		Vertex beginningVertex = ringkøbingVertex;
-		List<Vertex> allVerticesInGraph = graph.breadthFirstRepresentation(beginningVertex);
+		List<Vertex> allVerticesInGraph = DirectedGraphTraverser.getBreadthFirstRepresentation(graph,beginningVertex);
 		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
 		System.out.println("breadth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {

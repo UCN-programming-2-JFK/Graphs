@@ -1,11 +1,12 @@
-package mazesolver.controller;
+package mazesolver.controller.strategies;
 
 import java.awt.Point;
+import java.util.List;
 import java.util.Stack;
 
 public interface ExcavationStrategyIF {
 
-	Stack<Point> getTilesToCheck();
+	List<Point> getTilesToCheck();
 
 	Point getCurrentPoint();
 

@@ -1,10 +1,11 @@
-package mazesolver.controller;
+package mazesolver.controller.strategies;
 
 import java.awt.Point;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
+import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
 
 public class DepthFirstExcavationStrategy implements ExcavationStrategyIF {

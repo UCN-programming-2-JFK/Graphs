@@ -9,15 +9,18 @@ import javax.swing.*;
 import org.junit.validator.PublicClassValidator;
 
 import mazesolver.controller.Excavator;
+import mazesolver.controller.ExcavatorFactory;
+import mazesolver.controller.ExcavatorIF;
 import mazesolver.controller.MazeTool;
+import mazesolver.model.Maze;
 
 public class MazeFrame extends JFrame implements ExternalPainterIF {
 
 	private static final long serialVersionUID = 1L;
 	private static MazePanel panel;
 	private static boolean done = false;
-	private static int columns = 17, rows = 11, tileSizeInPixels = 50;
-	private static Excavator mazeTool;
+	private static int columns = 17, rows = 11, tileSizeInPixels = 100;
+	private static ExcavatorIF excavator;
 	
 	public static void main(String[] args) {
 
@@ -53,10 +56,14 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		}
 		;
 		while(true){
-			mazeTool = new Excavator(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
-			panel.setMaze(mazeTool.getMaze());
-			while (!mazeTool.isDone()) {
-				mazeTool.excavateNext();
+			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
+			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
+			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
+			//excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
+			//excavator = ExcavatorFactory.getRandomBreadthFirstExcavator(maze);								
+			panel.setMaze(maze);
+			while (!excavator.isDone()) {
+				excavator.excavateNext();
 				System.out.println(	"excavating!");
 				panel.repaint();
 				try {
@@ -68,7 +75,6 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -87,8 +93,10 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	@Override
 	public void addPaint(Graphics g) {
 		
-		drawTile(g, mazeTool.getCurrentPoint(), Color.blue);
-		for(Point toDoPoint : mazeTool.getTilesToCheck()) {
+		if(!excavator.isDone()) {
+			drawTile(g, excavator.getCurrentPoint(), Color.blue);
+		}
+		for(Point toDoPoint : excavator.getTilesToCheck()) {
 			drawTile(g, toDoPoint, Color.gray);
 		}
 	}

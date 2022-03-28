@@ -3,35 +3,16 @@ package mazesolver.controller;
 import java.awt.Point;
 import java.util.*;
 
-
+import mazesolver.controller.strategies.DepthFirstExcavationStrategy;
+import mazesolver.controller.strategies.ExcavationStrategyIF;
 import mazesolver.model.Maze;
 
 public class MazeTool {
 
 	public static enum Direction{UP , RIGHT , DOWN , LEFT };
 	public static final Point UpDeltas = new Point(0,-1),RightDeltas = new Point(1,0), DownDeltas = new Point(0,1), LeftDeltas = new Point(-1,0); 
+	private MazeTool () {}
 	
-	private Maze maze;
-	public Maze getMaze() {return maze;}
-	public void setMaze(Maze maze) {this.maze = maze;}
-	public ExcavationStrategyIF strategy;
-	
-	public ExcavationStrategyIF getStrategy() {
-		return this.strategy;
-	}
-	public void setStrategy(ExcavationStrategyIF strategy) {
-		this.strategy  =strategy;
-	}
-	public MazeTool (int width, int height, Point startingPoint, Point endPoint) {
-		setMaze(new Maze(width, height, startingPoint, endPoint));
-		maze.fillAllTiles(true);
-		setStrategy(new DepthFirstExcavationStrategy(maze));
-	}
-	
-	public void excavateNext() {		
-		getStrategy().excavateNext();
-	}
-	public Point getCurrentPoint() {return getStrategy().getCurrentPoint();}
 	public static List<Point> getValidNeighbors(Maze maze, Point tileToCheck) {
 		List<Point> neighbors = get4NeighborsNSEW(tileToCheck);
 		removeBorderTilesAndTilesOutsideMaze(maze.getTiles(), neighbors);
@@ -43,17 +24,19 @@ public class MazeTool {
 		return neighbors;
 	}
 	
-	public boolean isDone() {
-		return getStrategy().isDone();
-	}
-
-
+//	public static boolean isValidForExcavation(Maze maze, Point tileToCheck) {
+//		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && numberOfFilled(maze.getTiles(), get4NeighborsNSEW(tileToCheck)) >= 3
+//				&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
+//				&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
+//	}
+//	
 	public static boolean isValidForExcavation(Maze maze, Point tileToCheck) {
-		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && numberOfFilled(maze.getTiles(), get4NeighborsNSEW(tileToCheck)) >= 3
-				&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
-				&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
+		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze.getTiles(), MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
+				&& !MazeTool.hasUnconnectedOpenDiagonalNeighbor(maze, tileToCheck)
+		&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
+		&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
 	}
-
+	
 	public static void removeBorderTilesAndTilesOutsideMaze(boolean[][] tiles, List<Point> neighbors) {
 		for (int tileIndex = neighbors.size() - 1; tileIndex >= 0; tileIndex--) {
 			if (isOutside(tiles, neighbors.get(tileIndex)) || isBorderTile(tiles, neighbors.get(tileIndex))) {
@@ -61,6 +44,8 @@ public class MazeTool {
 			}
 		}
 	}
+	
+	
 
 	public static boolean isBorderTile(boolean[][] tiles, Point pointToCheck) {
 
@@ -89,6 +74,7 @@ public class MazeTool {
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x + 1, pointToGetNeighborsFor.y + 1));
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x - 1, pointToGetNeighborsFor.y + 1));
 		diagonalNeighbors.add(new Point(pointToGetNeighborsFor.x + 1, pointToGetNeighborsFor.y - 1));
+		System.out.println(diagonalNeighbors.size() + " number of diagonal neighbors");
 		return diagonalNeighbors;
 	}
 	
@@ -120,10 +106,10 @@ public class MazeTool {
 		return filled;
 	}
 	
-	public static List<Point> getLeftRightAndForward(boolean[][] tiles, Point currentTile){
-		if(!tiles[currentTile.x + UpDeltas.x][currentTile.y + UpDeltas.y]) {return getLeftRightAndForward(Direction.DOWN);}
-		else if(!tiles[currentTile.x + RightDeltas.x][currentTile.y + RightDeltas.y]) {return getLeftRightAndForward(Direction.LEFT);}
-		else if(!tiles[currentTile.x + DownDeltas.x][currentTile.y + DownDeltas.y]) {return getLeftRightAndForward(Direction.UP);}
+	public static List<Point> getLeftRightAndForward(Maze maze, Point currentTile){
+		if(!maze.getTiles()[currentTile.x + UpDeltas.x][currentTile.y + UpDeltas.y]) {return getLeftRightAndForward(Direction.DOWN);}
+		else if(!maze.getTiles()[currentTile.x + RightDeltas.x][currentTile.y + RightDeltas.y]) {return getLeftRightAndForward(Direction.LEFT);}
+		else if(!maze.getTiles()[currentTile.x + DownDeltas.x][currentTile.y + DownDeltas.y]) {return getLeftRightAndForward(Direction.UP);}
 		else {return getLeftRightAndForward(Direction.RIGHT);}
 	}
 	
@@ -138,8 +124,16 @@ public class MazeTool {
 		return new ArrayList<Point>(Arrays.asList(UpDeltas, RightDeltas, DownDeltas, LeftDeltas));
 	}
 	
-	public List<Point> getTilesToCheck() {
-		// TODO Auto-generated method stub
-		return getStrategy().getTilesToCheck();
+	public static boolean hasUnconnectedOpenDiagonalNeighbor(Maze maze, Point tileToCheck) {
+		List<Point> diagonalNeighbors = get4DiagonalNeighbors(tileToCheck);
+		for(Point neighbor : diagonalNeighbors) {
+			 if(!maze.getTiles()[neighbor.x][neighbor.y] &&
+					 !(!maze.getTiles()[tileToCheck.x][neighbor.y] ||
+					  !maze.getTiles()[neighbor.x][tileToCheck.y])) {
+				return true;
+			 }
+		}
+		return false;
 	}
+	
 }

@@ -6,9 +6,9 @@ import graph.*;
 
 public class DirectedMatrixGraph implements GraphIF {
 
-	private HashMap<Vertex, Integer> verticeIndices = new HashMap<Vertex, Integer>();
-	private int currentCapacity = 32;
-	private boolean[][] adjacencyMatrix = new boolean[currentCapacity][currentCapacity];
+	protected HashMap<Vertex, Integer> verticeIndices = new HashMap<Vertex, Integer>();
+	protected int currentCapacity = 32;
+	protected boolean[][] adjacencyMatrix = new boolean[currentCapacity][currentCapacity];
 
 	@Override
 	public int size() {
@@ -83,6 +83,5 @@ public class DirectedMatrixGraph implements GraphIF {
 			}
 		}
 		return adjacentVertices;
-
 	}
 }

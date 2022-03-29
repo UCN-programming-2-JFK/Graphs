@@ -7,7 +7,7 @@ import graph.*;
 
 public class DirectedListGraph implements GraphIF {
 
-	private HashMap<Vertex, List<Vertex>> vertices = new HashMap<>();
+	protected HashMap<Vertex, List<Vertex>> vertices = new HashMap<>();
 
 	@Override
 	public int size() {

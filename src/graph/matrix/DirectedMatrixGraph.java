@@ -64,10 +64,8 @@ public class DirectedMatrixGraph implements GraphIF {
 		return adjacencyMatrix[vertexFromIndex][vertexToIndex];
 	}
 
-	// note some authors define any connected vertice (no matter direction) to be
-	// adjacent
-	// https://mathoverflow.net/questions/330512/adjacency-definition-for-a-directed-graph
-	// here we define adjacent vertices to be those that this vertex points to
+	// note some authors define any connected vertice (no matter direction) to be adjacent
+	// here we define adjacent vertices to be only those that this vertex points to
 	@Override
 	public List<Vertex> getAdjacentVertices(Vertex vertex) {
 

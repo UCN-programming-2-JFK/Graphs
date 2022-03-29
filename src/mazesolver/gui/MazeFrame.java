@@ -66,9 +66,9 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			//excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-			excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
-			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
-			// excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
+			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
+			//excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
+			//excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
 			panel.setMaze(maze);
 			while (!excavator.isDone()) {
 				excavator.excavateNext();

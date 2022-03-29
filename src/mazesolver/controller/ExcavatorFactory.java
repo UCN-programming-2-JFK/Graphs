@@ -1,10 +1,12 @@
 package mazesolver.controller;
 
 import java.util.Random;
+import java.util.concurrent.RecursiveAction;
 
 import mazesolver.controller.strategies.BreadthFirstExcavationStrategy;
 import mazesolver.controller.strategies.DepthFirstExcavationStrategy;
-import mazesolver.controller.strategies.RandomBreadthFirstExcavationStrategy;
+import mazesolver.controller.strategies.RandomNextPointBreadthFirstExcavationStrategy;
+import mazesolver.controller.strategies.RecursiveDivisionExcavationStrategy;
 import mazesolver.model.Maze;
 
 public class ExcavatorFactory {
@@ -19,15 +21,17 @@ public class ExcavatorFactory {
 		return new Excavator(maze, new BreadthFirstExcavationStrategy(maze));
 	}
 	
-	public static ExcavatorIF getRandomBreadthFirstExcavator(Maze maze) {
-		return new Excavator(maze, new RandomBreadthFirstExcavationStrategy(maze));
+	public static ExcavatorIF getRandomNextPointBreadthFirstExcavationStrategy(Maze maze) {
+		return new Excavator(maze, new RandomNextPointBreadthFirstExcavationStrategy(maze));
 	}
 	
 	public static ExcavatorIF getExcavatorWithRandomStrategy(Maze maze) {
 
+//		return new Excavator(maze, new RecursiveDivisionExcavationStrategy(maze));
+//		
 		switch(random.nextInt(3)) {
 			case 0 : return new Excavator(maze, new DepthFirstExcavationStrategy(maze));
-			case 1 : return new Excavator(maze, new RandomBreadthFirstExcavationStrategy(maze));
+			case 1 : return new Excavator(maze, new RandomNextPointBreadthFirstExcavationStrategy(maze));
 			case 2 : return new Excavator(maze, new BreadthFirstExcavationStrategy(maze));
 		}
 		return null;

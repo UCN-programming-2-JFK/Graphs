@@ -15,6 +15,7 @@ public class Maze implements Iterable<Point> {
 		this.columns = columns;
 		this.rows = rows;
 		createTiles();
+		addBorders();
 	}
 	
 	public Maze(int columns, int rows, Point startingPoint, Point endPoint) {
@@ -63,15 +64,9 @@ public class Maze implements Iterable<Point> {
 		this.endPoint = goalTile;
 	}
 
-	public void clearAllTiles(boolean blocked) {
+	public void setAllTiles(boolean blocked) {
 		for (Point tile : this) {
-			setTile(tile, false);
-		}
-	}
-
-	public void fillAllTiles(boolean blocked) {
-		for (Point tile : this) {
-			setTile(tile, true);
+			setTile(tile, blocked);
 		}
 	}
 

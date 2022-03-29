@@ -6,9 +6,9 @@ import java.util.List;
 import graph.GraphIF;
 import graph.Vertex;
 
-public class DirectedGraphTraverser {
+public class GraphTraverser {
 
-	private DirectedGraphTraverser() {}
+	private GraphTraverser() {}
 	
 	public static List<Vertex> getDepthFirstRepresentation(GraphIF graphToTraverse, Vertex initialVertex) {
 		List<Vertex> visitedVertices = new ArrayList<Vertex>();

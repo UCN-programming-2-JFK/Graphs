@@ -22,7 +22,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static boolean done = false;
 	private static int columns, rows, tileSizeInPixels = 32;
 	private static ExcavatorIF excavator;
-	private static int msSleep = 10;
+	private static int msSleep = 20;
 
 	public static void main(String[] args) {
 
@@ -35,11 +35,12 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		if (rows % 2 == 0) {
 			rows--;
 		}
+		columns = rows = 41;
 		Runnable runner = new Runnable() {
 			public void run() {
 				MazeFrame window = new MazeFrame();
 				window.setTitle("Maze visualizer");
-				window.setUndecorated(true);
+				//window.setUndecorated(true);
 				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 				window.setSize(r.width, r.height);
@@ -64,10 +65,10 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		;
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
-			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-//			excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
+			//excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
+			excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
 			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
-			// excavator = ExcavatorFactory.getRandomBreadthFirstExcavator(maze);
+			// excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
 			panel.setMaze(maze);
 			while (!excavator.isDone()) {
 				excavator.excavateNext();

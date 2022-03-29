@@ -6,7 +6,7 @@ import java.util.*;
 import mazesolver.controller.strategies.BreadthFirstExcavationStrategy;
 import mazesolver.controller.strategies.DepthFirstExcavationStrategy;
 import mazesolver.controller.strategies.ExcavationStrategyIF;
-import mazesolver.controller.strategies.RandomBreadthFirstExcavationStrategy;
+import mazesolver.controller.strategies.RandomNextPointBreadthFirstExcavationStrategy;
 import mazesolver.model.Maze;
 
 public class Excavator implements ExcavatorIF {
@@ -42,7 +42,6 @@ public class Excavator implements ExcavatorIF {
 	
 	public Excavator(Maze maze, ExcavationStrategyIF strategy) {
 		this.maze = maze;
-		maze.fillAllTiles(true);
 		setStrategy(strategy);
 	}
 

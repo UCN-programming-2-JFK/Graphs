@@ -18,6 +18,7 @@ public class DepthFirstExcavationStrategy extends AbstractExcavationStrategy {
 
 	public DepthFirstExcavationStrategy(Maze mazeToExcavate) {
 		super(mazeToExcavate);
+		getMaze().setAllTiles(true);
 		tilesToCheck.push(getCurrentPoint());
 	}
 		

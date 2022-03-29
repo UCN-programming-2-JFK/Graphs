@@ -18,6 +18,7 @@ public class BreadthFirstExcavationStrategy extends AbstractExcavationStrategy {
 	
 	public BreadthFirstExcavationStrategy(Maze mazeToExcavate) {
 		super(mazeToExcavate);
+		getMaze().setAllTiles(true);
 		getTilesToCheck().add(getCurrentPoint());
 	}
 

@@ -10,9 +10,10 @@ import org.junit.jupiter.api.Test;
 import graph.GraphIF;
 import graph.Vertex;
 import graph.list.DirectedListGraph;
+import graph.matrix.DirectedMatrixGraph;
 import graph.tools.GraphTraverser;
 
-class DirectedListGraphTests {
+class DirectedMatrixGraphTests {
 	
 	private static GraphIF graph;
 
@@ -30,7 +31,7 @@ class DirectedListGraphTests {
 	@BeforeAll
 	static void createGraph() {
 		
-		graph = new DirectedListGraph();
+		graph = new DirectedMatrixGraph();
 		
 		graph.addVertices(verticesList);
 		assertEquals(verticesList.size(), graph.size());

@@ -58,13 +58,14 @@ class UndirectedMatrixGraphTests {
 	@Test
 	void testEdgesExist() {
 		assertTrue(graph.containsEdge(aalborgVertex, aarhusVertex));
+		assertTrue(graph.containsEdge(aarhusVertex,aalborgVertex ));
 		assertTrue(graph.containsEdge(herningVertex, vejleVertex));
 		assertTrue(graph.containsEdge(odenseVertex, københavnVertex));
 	}
 
 	@Test
 	void testEdgesDontExist() {
-		assertFalse(graph.containsEdge(aarhusVertex, aalborgVertex));
+		assertFalse(graph.containsEdge(vejleVertex, aalborgVertex));
 		assertFalse(graph.containsEdge(aalborgVertex, københavnVertex));
 	}
 	
@@ -72,7 +73,7 @@ class UndirectedMatrixGraphTests {
 	void testDepthFirstSearch() {
 		Vertex beginningVertex = aalborgVertex;
 		List<Vertex> allVerticesInGraph = GraphTraverser.getDepthFirstRepresentation(graph, beginningVertex);
-		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
+		assertEquals(verticesList.size(), allVerticesInGraph.size());
 		System.out.println("depth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
 			System.out.println(vertex);
@@ -85,7 +86,7 @@ class UndirectedMatrixGraphTests {
 	void testDepthFirstSearch2() {
 		Vertex beginningVertex = ringkøbingVertex;
 		List<Vertex> allVerticesInGraph = GraphTraverser.getDepthFirstRepresentation(graph, beginningVertex);
-		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
+		assertEquals(verticesList.size(), allVerticesInGraph.size());
 		System.out.println("depth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
 			System.out.println(vertex);
@@ -97,7 +98,7 @@ class UndirectedMatrixGraphTests {
 	void testBreadthFirstSearch() {
 		Vertex beginningVertex = aalborgVertex;
 		List<Vertex> allVerticesInGraph = GraphTraverser.getBreadthFirstRepresentation(graph, beginningVertex) ;
-		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
+		assertEquals(verticesList.size(), allVerticesInGraph.size());
 		System.out.println("breadth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
 			System.out.println(vertex);
@@ -109,7 +110,7 @@ class UndirectedMatrixGraphTests {
 	void testBreadthFirstSearch2() {
 		Vertex beginningVertex = ringkøbingVertex;
 		List<Vertex> allVerticesInGraph = GraphTraverser.getBreadthFirstRepresentation(graph,beginningVertex);
-		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
+		assertEquals(verticesList.size(), allVerticesInGraph.size());
 		System.out.println("breadth first from " + beginningVertex);
 		for(Vertex vertex :allVerticesInGraph) {
 			System.out.println(vertex);

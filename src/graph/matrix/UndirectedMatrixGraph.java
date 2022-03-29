@@ -56,6 +56,7 @@ public class UndirectedMatrixGraph implements GraphIF {
 		int vertexFromIndex = verticeIndices.get(vertexFrom);
 		int vertexToIndex = verticeIndices.get(vertexTo);
 		adjacencyMatrix[vertexFromIndex][vertexToIndex] = true;
+		adjacencyMatrix[vertexToIndex][vertexFromIndex] = true;
 	}
 
 	@Override

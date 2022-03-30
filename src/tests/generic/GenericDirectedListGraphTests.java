@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import graph.generic.list.GenericDirectedListGraph;
 import graph.list.DirectedListGraph;
-import graph.list.generic.GenericGraphIF;
+import graph.generic.GenericGraphIF;
 import graph.list.generic.tools.GenericGraphTraverser;
 import graph.tools.GraphTraverser;
 
@@ -110,7 +110,7 @@ class GenericDirectedListGraphTests {
 		List<City> allVerticesInGraph = GenericGraphTraverser.<City>getBreadthFirstRepresentation(graph,beginningVertex);
 		assertEquals(verticesList.size()-1, allVerticesInGraph.size());
 		System.out.println("breadth first from " + beginningVertex);
-		for(City vertex :allVerticesInGraph) {
+		for(City vertex : allVerticesInGraph) {
 			System.out.println(vertex);
 		}
 		System.out.println();

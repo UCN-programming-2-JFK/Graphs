@@ -9,11 +9,14 @@ import javax.swing.*;
 import org.junit.runners.model.FrameworkField;
 import org.junit.validator.PublicClassValidator;
 
+import graph.generic.list.GenericDirectedListGraph;
+import graph.generic.GenericGraphIF;
 import mazesolver.controller.Excavator;
 import mazesolver.controller.ExcavatorFactory;
 import mazesolver.controller.ExcavatorIF;
 import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
+import mazesolver.tools.MazeConverter;
 
 public class MazeFrame extends JFrame implements ExternalPainterIF {
 
@@ -22,7 +25,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static boolean done = false;
 	private static int columns, rows, tileSizeInPixels = 32;
 	private static ExcavatorIF excavator;
-	private static int msSleep = 20;
+	private static int msSleep = 10;
 
 	public static void main(String[] args) {
 
@@ -35,12 +38,12 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		if (rows % 2 == 0) {
 			rows--;
 		}
-		columns = rows = 41;
+	//	columns = rows = 19;
 		Runnable runner = new Runnable() {
 			public void run() {
 				MazeFrame window = new MazeFrame();
 				window.setTitle("Maze visualizer");
-				//window.setUndecorated(true);
+				window.setUndecorated(true);
 				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 				Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 				window.setSize(r.width, r.height);
@@ -65,7 +68,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		;
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
-			//excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
+			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
 			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze); 
 			//excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
 			//excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
@@ -104,6 +107,20 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			}
 			for (Point toDoPoint : excavator.getTilesToCheck()) {
 				drawTile(g, toDoPoint, Color.gray);
+			}
+		}
+		if(excavator.isDone()) {
+		GenericGraphIF<Point> graph = MazeConverter.mazeToGraph(panel.getMaze());
+		java.util.List<Point> allVertices = graph.getAllVertices();
+		g.setColor(Color.blue);
+			for(Point pointToDraw: allVertices) {
+				int nodeDiameter = (int)(tileSizeInPixels * .3);
+				g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels/2 -  nodeDiameter/2, pointToDraw.y * tileSizeInPixels + tileSizeInPixels/2 -  nodeDiameter/2, nodeDiameter, nodeDiameter);
+			for(Point pointToDrawTo: allVertices) {
+				if(graph.containsEdge(pointToDraw, pointToDrawTo)) {
+					g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels/2, pointToDraw.y * tileSizeInPixels + tileSizeInPixels/2, pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels/2, pointToDrawTo.y* tileSizeInPixels + tileSizeInPixels/2);
+				}
+			}
 			}
 		}
 	}

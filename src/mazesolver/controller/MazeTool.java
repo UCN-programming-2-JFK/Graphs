@@ -2,9 +2,6 @@ package mazesolver.controller;
 
 import java.awt.Point;
 import java.util.*;
-
-import mazesolver.controller.strategies.DepthFirstExcavationStrategy;
-import mazesolver.controller.strategies.ExcavationStrategyIF;
 import mazesolver.model.Maze;
 
 public class MazeTool {
@@ -24,14 +21,9 @@ public class MazeTool {
 		return neighbors;
 	}
 	
-//	public static boolean isValidForExcavation(Maze maze, Point tileToCheck) {
-//		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && numberOfFilled(maze.getTiles(), get4NeighborsNSEW(tileToCheck)) >= 3
-//				&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
-//				&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
-//	}
-//	
+
 	public static boolean isValidForExcavation(Maze maze, Point tileToCheck) {
-		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze.getTiles(), MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
+		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze, MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
 				&& !MazeTool.hasUnconnectedOpenDiagonalNeighbor(maze, tileToCheck)
 		&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
 		&& maze.getTiles()[tileToCheck.x][tileToCheck.y];
@@ -59,6 +51,10 @@ public class MazeTool {
 				|| pointToCheck.y >= tiles[0].length );
 	}
 
+	public static List<Point> get4NeighborsNSEW(int column, int row) {
+		return get4NeighborsNSEW(new Point(column, row));
+	}
+	
 	public static List<Point> get4NeighborsNSEW(Point pointToGetNeighborsFor) {
 		List<Point> neighbors = new ArrayList<>();
 		neighbors.add(new Point(pointToGetNeighborsFor.x, pointToGetNeighborsFor.y - 1));
@@ -96,10 +92,10 @@ public class MazeTool {
 		return true;
 	}
 
-	public static int numberOfFilled(boolean[][] tiles, List<Point> tilesToCheck) {
+	public static int numberOfFilled(Maze maze, List<Point> tilesToCheck) {
 		int filled = 0;
 		for (Point tile : tilesToCheck) {
-			if (tiles[tile.x][tile.y]) {
+			if (maze.getTile(tile.x,tile.y)) {
 				filled++;
 			}
 		}
@@ -136,4 +132,36 @@ public class MazeTool {
 		return false;
 	}
 	
+	public static boolean hasPerpendicularConnection(Maze maze, int column, int row) {
+		if(maze.getTile(column, row)) {return false;}
+		List<Point> nsewNeighbors = get4NeighborsNSEW(column, row);
+		List<Boolean> nsewNeighborsState = new ArrayList<Boolean>();
+		for(Point neighbor: nsewNeighbors) {
+			nsewNeighborsState.add(maze.getTile(neighbor.x, neighbor.y));
+		}
+		for(int tileCounter = 0; tileCounter < 4;tileCounter++) {
+			if(!nsewNeighborsState.get(tileCounter) && !nsewNeighborsState.get((tileCounter+1)%4)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean hasConnectingLine(Maze maze, Point pointFrom, Point pointTo) {
+//		System.out.println(	"Looking from " + pointFrom + " to " + pointTo);
+		if(pointFrom.x != pointTo.x && pointFrom.y != pointTo.y) {return false;}
+		Point movement = new Point((int)Math.signum(pointTo.x - pointFrom.x),(int) Math.signum(pointTo.y - pointFrom.y));
+		Point pointToCheck = new Point(pointFrom.x, pointFrom.y);
+		while(!pointToCheck.equals(pointTo)) {
+			if(maze.getTile(pointToCheck.x, pointToCheck.y)) {return false;}
+			pointToCheck.translate(movement.x, movement.y);
+//			System.out.println(	"checking " + pointToCheck);
+		}
+//		System.out.println("connected!");
+		return true;
+	}
+	
+	public static boolean isDeadEnd(Maze maze, Point pointToCheck) {
+		return !maze.getTile(pointToCheck.x, pointToCheck.y) && numberOfFilled(maze, get4NeighborsNSEW(pointToCheck))==3;
+	}
 }

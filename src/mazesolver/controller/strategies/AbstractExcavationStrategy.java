@@ -45,7 +45,8 @@ public abstract class AbstractExcavationStrategy implements ExcavationStrategyIF
 	}
 
 	protected boolean isValidForExcavation(Point tileToCheck) {
-		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze.getTiles(), MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
+//		System.out.println("is valid for excavation? " +  tileToCheck);
+		return  maze.getTiles()[tileToCheck.x][tileToCheck.y] && MazeTool.numberOfFilled(maze, MazeTool.get4NeighborsNSEW(tileToCheck)) >= 3
 				&& !MazeTool.hasUnconnectedOpenDiagonalNeighbor(maze, tileToCheck)
 		&& !(tileToCheck.x % 2 ==0 && tileToCheck.y% 2 ==0) 
 		&& maze.getTiles()[tileToCheck.x][tileToCheck.y];

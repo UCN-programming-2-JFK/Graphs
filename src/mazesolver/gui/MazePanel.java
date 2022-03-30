@@ -33,10 +33,10 @@ public class MazePanel extends JPanel {
 	public void paint(Graphics g) {
 		paintMaze(g);
 		drawCursor(g);
+		paintStartingAndEndingPoints(g);
 		if(getExternalPainter() != null) {
 			getExternalPainter().addPaint(g);
 		}
-		paintStartingAndEndingPoints(g);
 	}
 
 	private void paintStartingAndEndingPoints(Graphics g) {

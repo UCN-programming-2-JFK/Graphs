@@ -25,17 +25,17 @@ public class BreadthFirstExcavationStrategy extends AbstractExcavationStrategy {
 	@Override
 	public void excavateNext() {
 
+		setCurrentPoint(getNextPoint());
 		if (isValidForExcavation(getCurrentPoint())) {
 			getMaze().setTile(getCurrentPoint(), false);
 
 			List<Point> validNeighbors = MazeTool.getValidNeighbors(getMaze(), getCurrentPoint());
-			validNeighbors.remove(getMaze().getEndPoint());
 			for (Point neighPoint : validNeighbors) {
 				if (!getTilesToCheck().contains(neighPoint)) {
 					getTilesToCheck().add(neighPoint);
+//					System.out.println("added to tiles to check" + neighPoint);
 				}
 			}
 		}
-		setCurrentPoint(getNextPoint());
 	}
 }

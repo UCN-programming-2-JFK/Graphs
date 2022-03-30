@@ -4,7 +4,7 @@ import java.util.*;
 
 
 import graph.*;
-import graph.list.generic.GenericGraphIF;
+import graph.generic.GenericGraphIF;
 
 public class GenericDirectedListGraph<T> implements GenericGraphIF<T> {
 

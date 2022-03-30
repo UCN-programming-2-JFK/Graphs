@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 
 import graph.GraphIF;
 import graph.Vertex;
-import graph.list.generic.GenericGraphIF;
+import graph.generic.GenericGraphIF;
 
 public class GenericGraphTraverser {
 	

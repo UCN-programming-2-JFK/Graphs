@@ -41,11 +41,11 @@ public class MazePanel extends JPanel {
 
 	private void paintStartingAndEndingPoints(Graphics g) {
 		if(maze.getStartingPoint() != null) {
-			g.setColor(Color.red);
+			g.setColor(Color.green);
 			g.fillRect(maze.getStartingPoint().x * getTileSize(), maze.getStartingPoint().y * getTileSize(), getTileSize(), getTileSize());
 		}
 		if(maze.getEndPoint() != null) {
-			g.setColor(Color.green);
+			g.setColor(Color.red);
 			g.fillRect(maze.getEndPoint().x * getTileSize(), maze.getEndPoint().y * getTileSize(), getTileSize(), getTileSize());
 		}
 	}

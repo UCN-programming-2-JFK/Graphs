@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import graph.generic.list.GenericDirectedListGraph;
 import graph.list.DirectedListGraph;
 import graph.generic.GenericGraphIF;
-import graph.list.generic.tools.GenericGraphTraverser;
+import graph.generic.GenericGraphTraverser;
 import graph.tools.GraphTraverser;
 
 class GenericDirectedListGraphTests {

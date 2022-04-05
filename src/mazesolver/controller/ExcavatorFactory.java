@@ -27,16 +27,11 @@ public class ExcavatorFactory {
 	
 	public static ExcavatorIF getExcavatorWithRandomStrategy(Maze maze) {
 
-//		return new Excavator(maze, new RecursiveDivisionExcavationStrategy(maze));
-//		
 		switch(random.nextInt(2)) {
 			case 0 : return new Excavator(maze, new DepthFirstExcavationStrategy(maze));
 			case 1 : return new Excavator(maze, new RandomNextPointBreadthFirstExcavationStrategy(maze));
 			case 2 : return new Excavator(maze, new BreadthFirstExcavationStrategy(maze));
 		}
 		return null;
-		
 	}
-	
-	
 }

@@ -41,9 +41,14 @@ public class GenericDirectedWeightedMatrixGraph<T> implements GenericWeightedGra
 
 	private void doubleCapacity() {
 		int[][] newAdjacencyMatrix = new int[currentCapacity * 2][currentCapacity * 2];
-		for (int i = 0; i < currentCapacity; i++) {
-			for (int j = 0; j < currentCapacity; j++) {
-				newAdjacencyMatrix[i][j] = adjacencyMatrix[i][j];
+		for (int i = 0; i < currentCapacity*2; i++) {
+			for (int j = 0; j < currentCapacity*2; j++) {
+				if(i< currentCapacity && j < currentCapacity) {
+					newAdjacencyMatrix[i][j] = adjacencyMatrix[i][j];
+				}
+				else {
+					newAdjacencyMatrix[i][j] = Integer.MAX_VALUE;
+				}
 			}
 		}
 		currentCapacity *= 2;

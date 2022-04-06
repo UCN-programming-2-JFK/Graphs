@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import graph.generic.GenericGraphIF;
+import graph.generic.GenericWeightedGraphIF;
 import mazesolver.controller.ExcavatorFactory;
 import mazesolver.controller.ExcavatorIF;
 import mazesolver.model.Maze;
@@ -32,7 +33,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static boolean done = false;
 	private static int columns, rows, tileSizeInPixels = 32;
 	private static ExcavatorIF excavator;
-	private static int msSleep = 100, delayBetweenGeneration = 3000;
+	private static int msSleep = 1, delayBetweenGeneration = 3000;
 
 	public static void main(String[] args) {
 
@@ -74,16 +75,16 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		while (!done) {
 			System.out.println("not done");
 		}
-		
+
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-			 //excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
+			 excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
 			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
 			// excavator =
-			//ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
+			// ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
 			panel.setMaze(maze);
-		
+
 			while (!excavator.isDone()) {
 				excavator.excavateNext();
 				panel.repaint();
@@ -123,24 +124,29 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			for (Point toDoPoint : new ArrayList<Point>(excavator.getTilesToCheck())) {
 				drawTile(g, toDoPoint, Color.gray);
 			}
-		}
-		if (excavator.isDone()) {
-			GenericGraphIF<Point> graph = MazeConverter.mazeToGraph(panel.getMaze());
-			java.util.List<Point> allVertices = graph.getAllVertices();
-			g.setColor(Color.blue);
-			for (Point pointToDraw : allVertices) {
-				int nodeDiameter = (int) (tileSizeInPixels * .3);
-				g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
-						pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
-						nodeDiameter);
-				for (Point pointToDrawTo : allVertices) {
-					if (graph.containsEdge(pointToDraw, pointToDrawTo)) {
-						g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
+
+			if (excavator.isDone()) {
+				int drawnLines = 0; 
+				GenericWeightedGraphIF<Point> graph = MazeConverter.mazeToWeightedGraph(panel.getMaze());
+				java.util.List<Point> allVertices = graph.getAllVertices();
+				g.setColor(Color.blue);
+				for (Point pointToDraw : allVertices) {
+					int nodeDiameter = (int) (tileSizeInPixels * .3);
+					g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
+							pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
+							nodeDiameter);
+					for (Point pointToDrawTo : allVertices) {
+						if (graph.containsEdge(pointToDraw, pointToDrawTo)) {
+							drawnLines ++;
+							System.out.println("Drawing line from " + pointToDraw + " to " + pointToDrawTo);
+							g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
+									pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
+									pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
+									pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
+						}
 					}
 				}
+				System.out.println(	"Drawn lines " + drawnLines);
 			}
 		}
 	}

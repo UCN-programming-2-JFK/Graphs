@@ -60,8 +60,28 @@ class GenericUndirectedWeightedListGraphTests {
 		}
 		assertEquals(shortestPath.get(0), aalborgVertex);
 		assertEquals(shortestPath.get(1), aarhusVertex);
-		assertEquals(shortestPath.get(2), vejleVertex);
+		assertEquals(shortestPath.get(2), københavnVertex);
 		
+	}
+	
+	@Test
+	void testVerticesExist() {
+		for(City vertex : verticesList) {
+			assertTrue(graph.containsVertex(vertex));
+		}
+	}
+	
+	@Test
+	void testEdgesExist() {
+		assertTrue(graph.containsEdge(aalborgVertex, aarhusVertex));
+		assertTrue(graph.containsEdge(herningVertex, vejleVertex));
+		assertTrue(graph.containsEdge(odenseVertex, københavnVertex));
+	}
+
+	@Test
+	void testEdgesDontExist() {
+		assertFalse(graph.containsEdge(aarhusVertex, ringkøbingVertex));
+		assertFalse(graph.containsEdge(aalborgVertex, københavnVertex));
 	}
 	
 	

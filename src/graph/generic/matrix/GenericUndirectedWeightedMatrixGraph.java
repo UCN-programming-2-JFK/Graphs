@@ -4,9 +4,8 @@ public class GenericUndirectedWeightedMatrixGraph<T> extends GenericDirectedWeig
 
 	@Override
 	public void addEdge(T vertexFrom, T vertexTo, int weight) {
-		int vertexFromIndex = verticeIndices.get(vertexFrom);
-		int vertexToIndex = verticeIndices.get(vertexTo);
-		adjacencyMatrix[vertexFromIndex][vertexToIndex] = weight;
-		adjacencyMatrix[vertexToIndex][vertexFromIndex] = weight;
+		super.addEdge(vertexFrom, vertexTo, weight);
+		super.addEdge(vertexTo, vertexFrom, weight);
+		
 	}
 }

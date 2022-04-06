@@ -11,6 +11,7 @@ import graph.generic.list.GenericDirectedListGraph;
 import graph.generic.matrix.GenericUndirectedWeightedMatrixGraph;
 import graph.list.DirectedListGraph;
 import graph.generic.GenericGraphIF;
+import graph.generic.GenericGraphPathFinder;
 import graph.generic.GenericGraphTraverser;
 import graph.generic.GenericWeightedGraphIF;
 import graph.tools.GraphTraverser;
@@ -50,71 +51,18 @@ class GenericUndirectedWeightedListGraphTests {
 	}
 	
 	@Test
-	void testVerticesExist() {
-		for(City vertex : verticesList) {
-			assertTrue(graph.containsVertex(vertex));
-		}
-	}
-	
-	@Test
-	void testEdgesExist() {
-		assertTrue(graph.containsEdge(aalborgVertex, aarhusVertex));
-		assertTrue(graph.containsEdge(herningVertex, vejleVertex));
-		assertTrue(graph.containsEdge(odenseVertex, københavnVertex));
-	}
-
-	@Test
-	void testEdgesDontExist() {
-		assertFalse(graph.containsEdge(ringkøbingVertex, vejleVertex));
-		assertFalse(graph.containsEdge(aalborgVertex, ringkøbingVertex));
-	}
-	
-	@Test
-	void testDepthFirstSearch() {
-		City beginningVertex = aalborgVertex;
-		List<City> allVerticesInGraph = GenericGraphTraverser.<City>getDepthFirstRepresentation(graph, beginningVertex);
-		assertEquals(verticesList.size(), allVerticesInGraph.size());
-		System.out.println("depth first from " + beginningVertex);
-		for(City vertex :allVerticesInGraph) {
-			System.out.println(vertex);
-		}
+	void correctPathFromAalborgToKøbenhavnIsFound() {
+		List<City> shortestPath = GenericGraphPathFinder.getShortestPathUsingDijkstra(graph, aalborgVertex, københavnVertex);
 		System.out.println();
+		System.out.println("Final path:");
+		for(City city : shortestPath) {
+			System.out.println(" - " + city);
+		}
+		assertEquals(shortestPath.get(0), aalborgVertex);
+		assertEquals(shortestPath.get(1), aarhusVertex);
+		assertEquals(shortestPath.get(2), vejleVertex);
+		
 	}
 	
 	
-	@Test
-	void testDepthFirstSearch2() {
-		City beginningVertex = ringkøbingVertex;
-		List<City> allVerticesInGraph = GenericGraphTraverser.<City>getDepthFirstRepresentation(graph, beginningVertex);
-		assertEquals(verticesList.size(), allVerticesInGraph.size());
-		System.out.println("depth first from " + beginningVertex);
-		for(City vertex :allVerticesInGraph) {
-			System.out.println(vertex);
-		}
-		System.out.println();
-	}
-
-	@Test
-	void testBreadthFirstSearchFindsAllCities() {
-		City beginningVertex = aalborgVertex;
-		List<City> allVerticesInGraph = GenericGraphTraverser.<City>getBreadthFirstRepresentation(graph, beginningVertex) ;
-		assertEquals(verticesList.size(), allVerticesInGraph.size());
-		System.out.println("breadth first from " + beginningVertex);
-		for(City vertex :allVerticesInGraph) {
-			System.out.println(vertex);
-		}
-		System.out.println();
-	}
-	
-	@Test
-	void testBreadthFirstSearchFindsAllCities2() {
-		City beginningVertex = ringkøbingVertex;
-		List<City> allVerticesInGraph = GenericGraphTraverser.<City>getBreadthFirstRepresentation(graph,beginningVertex);
-		assertEquals(verticesList.size(), allVerticesInGraph.size());
-		System.out.println("breadth first from " + beginningVertex);
-		for(City vertex : allVerticesInGraph) {
-			System.out.println(vertex);
-		}
-		System.out.println();
-	}	
 }

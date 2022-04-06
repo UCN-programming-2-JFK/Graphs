@@ -20,4 +20,9 @@ public class City {
 			this(name);
 			setCoordinate(coordinate);
 		}
+		
+		@Override
+		public String toString() {
+		return getName();
+		}
 	}

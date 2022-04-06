@@ -12,7 +12,6 @@ public class GenericGraphPathFinder {
 
 	public static <T> List<T> getShortestPathUsingDijkstra(GenericWeightedGraphIF<T> graph, T startVertex,
 			T endVertex) {
-
 		
 		// Mark all nodes unvisited.
 		// Create a set of all the unvisited nodes called the unvisited set.
@@ -85,6 +84,7 @@ public class GenericGraphPathFinder {
 		return shortestPath;
 	}
 
+	//Helper method for finding the most promising vertex in the map of tentativeWeights
 	private static<T> T getVertexWithLowestTentativeWeight(HashMap<T, Integer> tentativeWeights, List<T> unvisitedSet) {
 		T vertexWithLowestTentativeWeight = null;
 		int currentLowestWeightFound = Integer.MAX_VALUE;
@@ -96,6 +96,7 @@ public class GenericGraphPathFinder {
 		return vertexWithLowestTentativeWeight;
 	}
 
+	//Helper method for iterating through the map of previous vertices and reconstructing the path from end to beginning
 	private static<T> List<T> buildPathFromPreviousVerticeCollection(HashMap<T, T> previous, T endVertex) {
 		List<T> shortestPath = new ArrayList<T>();
 		T currentVertex = endVertex;
@@ -108,6 +109,7 @@ public class GenericGraphPathFinder {
 		return shortestPath;
 	}
 
+	//helper method for finding the smallest tentative value in the unvisited set
 	private static<T> int getSmallestTentativeValue(List<T> unvisitedSet, HashMap<T, Integer> tentativeWeights) {
 		int smallestValueSoFar = Integer.MAX_VALUE;
 		

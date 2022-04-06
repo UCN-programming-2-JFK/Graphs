@@ -72,7 +72,7 @@ public class MazeConverter {
 				Point pointFrom = allVerticesList.get(verticeCounter);
 				Point pointTo = allVerticesList.get(candidateVerticeCounter);
 
-				if (MazeTool.hasConnectingLine(maze, pointFrom, pointTo)) {
+				if (MazeTool.hasConnectingLine(maze, pointFrom, pointTo) && !anyVertexExistsIn(MazeTool.getTilesBetween(maze, pointFrom, pointTo), graph)) {
 					int weight = (int) Math.max(Math.abs(pointFrom.x - pointTo.x), Math.abs(pointFrom.y - pointTo.y));
 					graph.addEdge(pointFrom, pointTo, weight);
 					System.out.println("Adding edge from (" + pointFrom.x + ", " + pointFrom.y + ") to (" + pointTo.x + ", " + pointTo.y + ")");
@@ -81,6 +81,14 @@ public class MazeConverter {
 			}
 
 		}
-int a = 8;
+	}
+
+	private static boolean anyVertexExistsIn(List<Point> tilesBetween, GenericWeightedGraphIF<Point> graph) {
+		for(Point vertexToCheck : graph.getAllVertices()) {
+			for(Point pointToCheck : tilesBetween) {
+				if(vertexToCheck.equals(pointToCheck)) {return true;}
+			}
+		}
+		return false;
 	}
 }

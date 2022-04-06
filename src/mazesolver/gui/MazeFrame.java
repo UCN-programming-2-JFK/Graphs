@@ -1,10 +1,12 @@
 package mazesolver.gui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -14,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowStateListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -21,6 +24,7 @@ import javax.swing.WindowConstants;
 
 import graph.generic.GenericGraphIF;
 import graph.generic.GenericWeightedGraphIF;
+import graph.generic.tools.GenericGraphPathFinder;
 import mazesolver.controller.ExcavatorFactory;
 import mazesolver.controller.ExcavatorIF;
 import mazesolver.model.Maze;
@@ -31,9 +35,9 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static final long serialVersionUID = 1L;
 	private static MazePanel panel;
 	private static boolean done = false;
-	private static int columns, rows, tileSizeInPixels = 32;
+	private static int columns, rows, tileSizeInPixels = 64;
 	private static ExcavatorIF excavator;
-	private static int msSleep = 1, delayBetweenGeneration = 3000;
+	private static int msSleep = 25, delayBetweenGeneration = 5000;
 
 	public static void main(String[] args) {
 
@@ -46,7 +50,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		if (rows % 2 == 0) {
 			rows--;
 		}
-		columns = rows = 19;
+		columns = rows = 11;
 		Runnable runner = new Runnable() {
 			public void run() {
 				MazeFrame window = new MazeFrame();
@@ -79,11 +83,10 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-			 excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
-			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
-			// excavator =
-			// ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
-			panel.setMaze(maze);
+			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
+			 //excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
+			 //excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
+			 panel.setMaze(maze);
 
 			while (!excavator.isDone()) {
 				excavator.excavateNext();
@@ -112,7 +115,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 
 	@Override
 	public void addPaint(Graphics g) {
-
+		
 		if (excavator != null) {
 			if (!excavator.isDone()) {
 				drawTile(g, excavator.getCurrentPoint(), Color.orange);
@@ -126,27 +129,41 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			}
 
 			if (excavator.isDone()) {
-				int drawnLines = 0; 
+				((Graphics2D)g).setStroke(new BasicStroke(4));				
 				GenericWeightedGraphIF<Point> graph = MazeConverter.mazeToWeightedGraph(panel.getMaze());
+				List<Point> solution = GenericGraphPathFinder.getShortestPathUsingDijkstra(graph,
+						panel.getMaze().getStartingPoint(), panel.getMaze().getEndPoint());
 				java.util.List<Point> allVertices = graph.getAllVertices();
-				g.setColor(Color.blue);
 				for (Point pointToDraw : allVertices) {
-					int nodeDiameter = (int) (tileSizeInPixels * .3);
+					for (Point pointToDrawTo : graph.getAdjacentVertices(pointToDraw)) {
+						if (solution.contains(pointToDraw) && solution.contains(pointToDrawTo)) {
+							g.setColor(Color.green);
+						} else {
+							g.setColor(Color.blue);
+						}
+						g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
+								pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
+								pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
+								pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
+					}
+				}
+				for (Point pointToDraw : allVertices) {
+					if (solution.contains(pointToDraw)) {
+						g.setColor(Color.green);
+						
+					} else {
+						g.setColor(Color.blue);
+					}
+					int nodeDiameter = (int) (tileSizeInPixels * .4);
 					g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
 							pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
 							nodeDiameter);
-					for (Point pointToDrawTo : allVertices) {
-						if (graph.containsEdge(pointToDraw, pointToDrawTo)) {
-							drawnLines ++;
-							System.out.println("Drawing line from " + pointToDraw + " to " + pointToDrawTo);
-							g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
-									pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
-									pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
-									pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
-						}
-					}
+					g.setColor(Color.black);
+					g.drawOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
+							pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
+							nodeDiameter);
+					
 				}
-				System.out.println(	"Drawn lines " + drawnLines);
 			}
 		}
 	}

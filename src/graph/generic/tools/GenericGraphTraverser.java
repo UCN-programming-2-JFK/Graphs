@@ -1,4 +1,4 @@
-package graph.generic;
+package graph.generic.tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import javax.swing.JMenu;
 
 import graph.GraphIF;
 import graph.Vertex;
+import graph.generic.GenericGraphIF;
 
 public class GenericGraphTraverser {
 	

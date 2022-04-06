@@ -9,9 +9,9 @@ import java.util.Stack;
 import mazesolver.controller.MazeTool;
 import mazesolver.model.Maze;
 
-public class RandomNextPointBreadthFirstExcavationStrategy extends BreadthFirstExcavationStrategy {
+public class BreadthFirstExcavationWithRandomNextPointStrategy extends BreadthFirstExcavationStrategy {
 
-	public RandomNextPointBreadthFirstExcavationStrategy(Maze mazeToExcavate) {
+	public BreadthFirstExcavationWithRandomNextPointStrategy(Maze mazeToExcavate) {
 		super(mazeToExcavate);
 	}
 

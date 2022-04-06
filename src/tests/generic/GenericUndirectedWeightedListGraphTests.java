@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import graph.generic.list.GenericDirectedListGraph;
 import graph.generic.matrix.GenericUndirectedWeightedMatrixGraph;
+import graph.generic.tools.GenericGraphPathFinder;
+import graph.generic.tools.GenericGraphTraverser;
 import graph.list.DirectedListGraph;
 import graph.generic.GenericGraphIF;
-import graph.generic.GenericGraphPathFinder;
-import graph.generic.GenericGraphTraverser;
 import graph.generic.GenericWeightedGraphIF;
 import graph.tools.GraphTraverser;
 

@@ -1,9 +1,11 @@
-package graph.generic;
+package graph.generic.tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import graph.generic.GenericWeightedGraphIF;
 
 public class GenericGraphPathFinder {
 
@@ -42,18 +44,18 @@ public class GenericGraphPathFinder {
 			
 			// For the current node, consider all of its unvisited neighbors
 			for (T adjacentVertex : graph.getAdjacentVertices(currentVertex)) {
-				System.out.println("Looking at " + adjacentVertex + " from " + currentVertex);
+				//System.out.println("Looking at " + adjacentVertex + " from " + currentVertex);
 				if (unvisitedSet.contains(adjacentVertex)) {
-					System.out.println(adjacentVertex + " is unvisited");
+//					System.out.println(adjacentVertex + " is unvisited");
 					// and calculate their tentative distances through the current node.
 					int newDistanceToAdjacentNodeThroughCurrentNode = distanceToCurrentNode
 							+ graph.getEdgeWeight(currentVertex, adjacentVertex);
 					int currentDistanceToAdjacentNode = tentativeWeights.get(adjacentVertex);
-					System.out.print("Previous distance to " + adjacentVertex + " was " + currentDistanceToAdjacentNode);
-					System.out.println(", new distance via " + currentVertex + " is " + newDistanceToAdjacentNodeThroughCurrentNode);
+//					System.out.print("Previous distance to " + adjacentVertex + " was " + currentDistanceToAdjacentNode);
+//					System.out.println(", new distance via " + currentVertex + " is " + newDistanceToAdjacentNodeThroughCurrentNode);
 					// Compare the newly calculated tentative distance to the current assigned value
 					if(newDistanceToAdjacentNodeThroughCurrentNode < currentDistanceToAdjacentNode) {
-						System.out.println("setting route to " + adjacentVertex + " to go from " + currentVertex);
+//						System.out.println("setting route to " + adjacentVertex + " to go from " + currentVertex);
 						int smallestValue = newDistanceToAdjacentNodeThroughCurrentNode;
 						//and assign the smaller one.
 						tentativeWeights.put(adjacentVertex, smallestValue);
@@ -64,7 +66,7 @@ public class GenericGraphPathFinder {
 			//When we are done considering all of the unvisited neighbors of the current node,
 			//mark the current node as visited and remove it from the unvisited set. 
 			//A visited node will never be checked again.
-			System.out.println("Removing " + currentVertex);
+//			System.out.println("Removing " + currentVertex);
 			unvisitedSet.remove(currentVertex);
 			currentVertex = getVertexWithLowestTentativeWeight(tentativeWeights, unvisitedSet);
 			//If the destination node has been marked visited (when planning a route between two specific nodes) 

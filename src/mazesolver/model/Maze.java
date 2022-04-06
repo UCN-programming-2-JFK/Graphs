@@ -77,6 +77,10 @@ public class Maze implements Iterable<Point> {
 	public boolean getTile(int column, int row) {
 		return getTiles()[column][row];
 	}
+	
+	public boolean getTile(Point point) {
+		return getTiles()[point.x][point.y];
+	}
 
 	public void setTile(Point tile, boolean blocked) {
 		setTile(tile.x, tile.y, blocked);

@@ -148,17 +148,30 @@ public class MazeTool {
 	}
 
 	public static boolean hasConnectingLine(Maze maze, Point pointFrom, Point pointTo) {
-//		System.out.println(	"Looking from " + pointFrom + " to " + pointTo);
+		if(pointFrom.equals(pointTo)) {return true;}
 		if(pointFrom.x != pointTo.x && pointFrom.y != pointTo.y) {return false;}
+		//TODO: return true if pointFrom and pointTo are neighbors vertically or horizontally
+		List<Point> tilesBetween = getTilesBetween(maze, pointFrom, pointTo);
+		for(Point pointToCheck : tilesBetween) {
+			if(maze.getTile(pointToCheck)) {return false;}
+		}
+		return true;
+	}
+
+	public static List<Point> getTilesBetween(Maze maze, Point pointFrom, Point pointTo) {
+		List<Point> tilesBetween = new ArrayList<Point> ();
 		Point movement = new Point((int)Math.signum(pointTo.x - pointFrom.x),(int) Math.signum(pointTo.y - pointFrom.y));
 		Point pointToCheck = new Point(pointFrom.x, pointFrom.y);
+//		System.out.println("Looking for points between " + pointFrom + " and " + pointTo);
+		pointToCheck.translate(movement.x, movement.y);
 		while(!pointToCheck.equals(pointTo)) {
-			if(maze.getTile(pointToCheck.x, pointToCheck.y)) {return false;}
+//			System.out.println(" - adding " + pointToCheck);
+			tilesBetween.add(new Point(pointToCheck.x, pointToCheck.y));
 			pointToCheck.translate(movement.x, movement.y);
-//			System.out.println(	"checking " + pointToCheck);
 		}
-//		System.out.println("connected!");
-		return true;
+		
+		
+		return tilesBetween;
 	}
 	
 	public static boolean isDeadEnd(Maze maze, Point pointToCheck) {

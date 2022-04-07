@@ -73,7 +73,7 @@ public class GenericGraphPathFinder {
 			//or if the smallest tentative distance among the nodes in the unvisited set is infinity (when planning a complete traversal
 			//- occurs when there is no connection between the initial node and remaining unvisited nodes), then stop. 
 			//The algorithm has finished.
-			if(!unvisitedSet.contains(endVertex) || getSmallestTentativeValue(unvisitedSet, tentativeWeights) == Integer.MAX_VALUE) {
+			if(!unvisitedSet.contains(endVertex) || tentativeWeights.get(currentVertex) == Integer.MAX_VALUE) {
 				isDone = true;
 			}
 		}
@@ -109,15 +109,5 @@ public class GenericGraphPathFinder {
 		
 		Collections.reverse(shortestPath);
 		return shortestPath;
-	}
-
-	//helper method for finding the smallest tentative value in the unvisited set
-	private static<T> int getSmallestTentativeValue(List<T> unvisitedSet, HashMap<T, Integer> tentativeWeights) {
-		int smallestValueSoFar = Integer.MAX_VALUE;
-		
-		for(T vertex : unvisitedSet) {
-			smallestValueSoFar = (int)Math.min(smallestValueSoFar, tentativeWeights.get(vertex));
-		}
-		return smallestValueSoFar;
 	}
 }

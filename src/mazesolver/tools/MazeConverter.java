@@ -75,7 +75,7 @@ public class MazeConverter {
 				if (MazeTool.hasConnectingLine(maze, pointFrom, pointTo) && !anyVertexExistsIn(MazeTool.getTilesBetween(maze, pointFrom, pointTo), graph)) {
 					int weight = (int) Math.max(Math.abs(pointFrom.x - pointTo.x), Math.abs(pointFrom.y - pointTo.y));
 					graph.addEdge(pointFrom, pointTo, weight);
-					System.out.println("Adding edge from (" + pointFrom.x + ", " + pointFrom.y + ") to (" + pointTo.x + ", " + pointTo.y + ")");
+//					System.out.println("Adding edge from (" + pointFrom.x + ", " + pointFrom.y + ") to (" + pointTo.x + ", " + pointTo.y + ")");
 //					graph.addEdge(pointFrom, pointTo);
 				}
 			}

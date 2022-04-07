@@ -35,9 +35,9 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 	private static final long serialVersionUID = 1L;
 	private static MazePanel panel;
 	private static boolean done = false;
-	private static int columns, rows, tileSizeInPixels = 64;
+	private static int columns, rows, tileSizeInPixels = 40;
 	private static ExcavatorIF excavator;
-	private static int msSleep = 25, delayBetweenGeneration = 5000;
+	private static int msSleep = 150, delayBetweenGeneration = 5000;
 
 	public static void main(String[] args) {
 
@@ -50,7 +50,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		if (rows % 2 == 0) {
 			rows--;
 		}
-		columns = rows = 11;
+		columns = rows = 19;
 		Runnable runner = new Runnable() {
 			public void run() {
 				MazeFrame window = new MazeFrame();
@@ -58,7 +58,8 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 				// window.setExtendedState(JFrame.MAXIMIZED_BOTH);
 				// window.setUndecorated(true);
 				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-				Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+				// Rectangle r =
+				// GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 				// window.setSize(r.width, r.height);
 				window.pack();
 				window.setLocationRelativeTo(null);
@@ -83,22 +84,20 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 		while (true) {
 			Maze maze = new Maze(columns, rows, new Point(1, 1), new Point(columns - 2, rows - 2));
 			excavator = ExcavatorFactory.getExcavatorWithRandomStrategy(maze);
-			//excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
-			 //excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
-			 //excavator = ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
-			 panel.setMaze(maze);
+			// excavator = ExcavatorFactory.getDepthFirstExcavator(maze);
+			// excavator = ExcavatorFactory.getBreadthFirstExcavator(maze);
+			// excavator =
+			// ExcavatorFactory.getRandomNextPointBreadthFirstExcavationStrategy(maze);
+			panel.setMaze(maze);
 
-			while (!excavator.isDone()) {
-				excavator.excavateNext();
-				panel.repaint();
-				try {
-					Thread.sleep(msSleep);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
 			try {
+				while (!excavator.isDone()) {
+					excavator.excavateNext();
+					panel.repaint();
+					Thread.sleep(msSleep);
+				}
 				Thread.sleep(delayBetweenGeneration);
+
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -115,7 +114,7 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 
 	@Override
 	public void addPaint(Graphics g) {
-		
+
 		if (excavator != null) {
 			if (!excavator.isDone()) {
 				drawTile(g, excavator.getCurrentPoint(), Color.orange);
@@ -129,42 +128,46 @@ public class MazeFrame extends JFrame implements ExternalPainterIF {
 			}
 
 			if (excavator.isDone()) {
-				((Graphics2D)g).setStroke(new BasicStroke(4));				
+				((Graphics2D) g).setStroke(new BasicStroke(3));
 				GenericWeightedGraphIF<Point> graph = MazeConverter.mazeToWeightedGraph(panel.getMaze());
-				List<Point> solution = GenericGraphPathFinder.getShortestPathUsingDijkstra(graph,
-						panel.getMaze().getStartingPoint(), panel.getMaze().getEndPoint());
-				java.util.List<Point> allVertices = graph.getAllVertices();
-				for (Point pointToDraw : allVertices) {
-					for (Point pointToDrawTo : graph.getAdjacentVertices(pointToDraw)) {
-						if (solution.contains(pointToDraw) && solution.contains(pointToDrawTo)) {
-							g.setColor(Color.green);
-						} else {
-							g.setColor(Color.blue);
-						}
-						g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
-								pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
-					}
-				}
-				for (Point pointToDraw : allVertices) {
-					if (solution.contains(pointToDraw)) {
-						g.setColor(Color.green);
-						
-					} else {
-						g.setColor(Color.blue);
-					}
-					int nodeDiameter = (int) (tileSizeInPixels * .4);
-					g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
-							pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
-							nodeDiameter);
-					g.setColor(Color.black);
-					g.drawOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
-							pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
-							nodeDiameter);
-					
-				}
+				findAndDrawSolution(g, graph);
 			}
+		}
+	}
+
+	private void findAndDrawSolution(Graphics g, GenericWeightedGraphIF<Point> graph) {
+		List<Point> solution = GenericGraphPathFinder.getShortestPathUsingDijkstra(graph,
+				panel.getMaze().getStartingPoint(), panel.getMaze().getEndPoint());
+		java.util.List<Point> allVertices = graph.getAllVertices();
+		for (Point pointToDraw : allVertices) {
+			for (Point pointToDrawTo : graph.getAdjacentVertices(pointToDraw)) {
+				if (solution.contains(pointToDraw) && solution.contains(pointToDrawTo)) {
+					g.setColor(Color.green);
+				} else {
+					g.setColor(Color.blue);
+				}
+				g.drawLine(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2,
+						pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2,
+						pointToDrawTo.x * tileSizeInPixels + tileSizeInPixels / 2,
+						pointToDrawTo.y * tileSizeInPixels + tileSizeInPixels / 2);
+			}
+		}
+		for (Point pointToDraw : allVertices) {
+			if (solution.contains(pointToDraw)) {
+				g.setColor(Color.green);
+
+			} else {
+				g.setColor(Color.blue);
+			}
+			int nodeDiameter = (int) (tileSizeInPixels * .4);
+			g.fillOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
+					pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
+					nodeDiameter);
+			g.setColor(Color.black);
+			g.drawOval(pointToDraw.x * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2,
+					pointToDraw.y * tileSizeInPixels + tileSizeInPixels / 2 - nodeDiameter / 2, nodeDiameter,
+					nodeDiameter);
+
 		}
 	}
 
